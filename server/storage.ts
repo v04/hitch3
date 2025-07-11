@@ -90,6 +90,9 @@ export class MemStorage implements IStorage {
     const user: User = { 
       ...insertUser, 
       id,
+      location: insertUser.location || null,
+      avatar: insertUser.avatar || null,
+      phone: insertUser.phone || null,
       rating: "4.5",
       trustScore: 85,
       isVerified: false,
@@ -167,7 +170,14 @@ export class MemStorage implements IStorage {
     const ride: Ride = { 
       ...insertRide, 
       id,
+      riderId: insertRide.riderId || null,
+      pickupLocation: insertRide.pickupLocation || null,
+      destination: insertRide.destination || null,
+      seatsAvailable: insertRide.seatsAvailable || 1,
       tokensEarned: 10,
+      distance: insertRide.distance || null,
+      duration: insertRide.duration || null,
+      scheduledTime: insertRide.scheduledTime || null,
       createdAt: new Date(),
       completedAt: null
     };

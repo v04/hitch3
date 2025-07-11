@@ -31,7 +31,7 @@ export default function HomePage() {
   return (
     <>
       {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-100 px-4 py-3 relative z-40">
+      <header className="bg-white shadow-sm border-b border-gray-100 px-4 py-2 relative z-40">
         <div className="flex items-center justify-between">
           {/* Logo and Location */}
           <div className="flex items-center space-x-3">
@@ -39,7 +39,7 @@ export default function HomePage() {
               <Car className="w-4 h-4 text-white" />
             </div>
             <div>
-              <h1 className="font-bold text-lg text-blue-600">HICUT</h1>
+              <h1 className="font-bold text-lg text-blue-600">Hitch</h1>
               <p className="text-xs text-gray-500">Bangalore, India</p>
             </div>
           </div>
@@ -60,7 +60,7 @@ export default function HomePage() {
       </header>
 
       {/* Tab Content */}
-      <div className="pb-20">
+      <div className="pb-16">
         {renderTabContent()}
       </div>
 

@@ -1,8 +1,10 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { NearbyUser } from '@/lib/types';
-import { Star, Car, User } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+import { Star, Car, User, MessageCircle, Phone } from 'lucide-react';
 
 // Mock data for development
 const mockNearbyUsers: NearbyUser[] = [
@@ -43,8 +45,38 @@ const mockNearbyUsers: NearbyUser[] = [
 ];
 
 export default function NearbyUsers() {
+  const { toast } = useToast();
+
+  const handleConnect = (user: NearbyUser) => {
+    if (user.role === 'driver') {
+      toast({
+        title: `Connecting with ${user.name}`,
+        description: "Sending ride request...",
+      });
+      
+      setTimeout(() => {
+        toast({
+          title: "Request sent! 🚗",
+          description: `${user.name} will respond shortly`,
+        });
+      }, 1500);
+    } else {
+      toast({
+        title: `Connecting with ${user.name}`,
+        description: "Rider is looking for the same route",
+      });
+    }
+  };
+
+  const handleMessage = (user: NearbyUser) => {
+    toast({
+      title: `Chat with ${user.name}`,
+      description: "Opening conversation...",
+    });
+  };
+
   return (
-    <div className="bg-gray-50 px-4 py-6">
+    <div className="bg-gray-50 px-4 py-4">
       <h3 className="font-semibold text-gray-800 mb-4">
         Nearby Community ({mockNearbyUsers.length})
       </h3>
@@ -52,10 +84,10 @@ export default function NearbyUsers() {
         {mockNearbyUsers.map((user) => (
           <Card 
             key={user.id} 
-            className="shadow-sm border border-gray-100 hover:shadow-md transition-shadow cursor-pointer"
+            className="shadow-sm border border-gray-100 hover:shadow-md transition-all duration-200"
           >
             <CardContent className="p-4">
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center space-x-3">
                   <Avatar className="w-12 h-12">
                     <AvatarFallback className="bg-gradient-to-br from-emerald-500 to-blue-600 text-white font-semibold">
@@ -88,6 +120,29 @@ export default function NearbyUsers() {
                     {user.role === 'driver' ? `${user.seatsAvailable} seats` : 'Rider'}
                   </span>
                 </div>
+              </div>
+              
+              {/* Action Buttons */}
+              <div className="flex space-x-2">
+                <Button 
+                  size="sm" 
+                  onClick={() => handleConnect(user)}
+                  className={`flex-1 ${
+                    user.role === 'driver' 
+                      ? 'bg-emerald-600 hover:bg-emerald-700' 
+                      : 'bg-amber-600 hover:bg-amber-700'
+                  } text-white`}
+                >
+                  {user.role === 'driver' ? 'Request Ride' : 'Connect'}
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => handleMessage(user)}
+                  className="px-3"
+                >
+                  <MessageCircle className="w-4 h-4" />
+                </Button>
               </div>
             </CardContent>
           </Card>

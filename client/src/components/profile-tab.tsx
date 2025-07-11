@@ -55,7 +55,7 @@ const mockAchievements: Achievement[] = [
 
 export default function ProfileTab() {
   return (
-    <div className="px-4 py-6">
+    <div className="px-4 py-4">
       {/* Profile Header */}
       <Card className="bg-gradient-to-r from-blue-600 to-emerald-500 text-white mb-6">
         <CardContent className="p-6">

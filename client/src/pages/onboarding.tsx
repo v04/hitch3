@@ -50,7 +50,7 @@ export default function OnboardingPage() {
           <div className="w-24 h-24 bg-white/20 rounded-full flex items-center justify-center mb-6 mx-auto">
             <Car className="w-12 h-12 text-white" />
           </div>
-          <h1 className="text-4xl font-bold mb-4">HICUT</h1>
+          <h1 className="text-4xl font-bold mb-4">Hitch</h1>
           <p className="text-lg opacity-90 leading-relaxed">
             Community-driven hitchhiking with token rewards
           </p>

@@ -1,12 +1,14 @@
-# HICUT - Community-Driven Reward-Token Hitchhiking App
+# Hitch - Community-Driven Reward-Token Hitchhiking App
 
 ## Overview
 
-HICUT is a revolutionary ride-sharing platform that connects riders ("Hitchers") and drivers ("Pilots") for short to medium-distance lifts using a token-based reward system instead of traditional cash payments. The app enables community members to share rides for distances ranging from 500m to 200km, with every completed ride earning participants reward tokens that can be redeemed for food, travel gear, clothing, and exclusive coupons.
+Hitch is a revolutionary ride-sharing platform that connects riders ("Hitchers") and drivers ("Pilots") for short to medium-distance lifts using a token-based reward system instead of traditional cash payments. The app enables community members to share rides for distances ranging from 500m to 200km, with every completed ride earning participants reward tokens that can be redeemed for food, travel gear, clothing, and exclusive coupons.
 
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
+UI/UX Preferences: Minimal spacing, engaging interactions, 9/10 user experience target
+Branding: Updated from HICUT to "Hitch" for better accessibility
 
 ## System Architecture
 
@@ -93,5 +95,21 @@ The application uses Drizzle ORM with PostgreSQL dialect, featuring these main e
 - `npm run build`: Production build for both client and server
 - `npm run start`: Production server startup
 - `npm run db:push`: Database schema deployment
+
+## Recent Updates (January 2025)
+
+### Major Enhancements Made
+- **Branding Update**: Changed app name from HICUT to "Hitch" for better brand appeal
+- **Rewards System Overhaul**: Completely redesigned rewards tab with tabbed interface, badges (Popular, Hot, Premium, Exclusive), and interactive redemption
+- **Enhanced Interactivity**: Added click handlers to map users, nearby users list with connect/message buttons, and real-time feedback via toasts
+- **Improved Spacing**: Reduced padding throughout app for more minimal, clean appearance
+- **User Experience**: Upgraded from 6/10 to target 9/10 UX with engaging animations and micro-interactions
+
+### Technical Improvements
+- Fixed TypeScript type errors in storage implementation
+- Added comprehensive toast notifications for user feedback
+- Implemented tabbed reward categories (Food, Travel, Style, Deals)
+- Enhanced nearby users with action buttons and improved visual hierarchy
+- Made map elements clickable with proper feedback mechanisms
 
 The application is architected for scalability with clear separation of concerns, type safety throughout the stack, and modern development practices including responsive design, accessibility features, and optimized performance.
