@@ -1,4 +1,5 @@
 import { pgTable, text, serial, integer, boolean, timestamp, decimal, jsonb } from "drizzle-orm/pg-core";
+import { relations } from "drizzle-orm";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -116,3 +117,64 @@ export type Reward = typeof rewards.$inferSelect;
 export type InsertReward = z.infer<typeof insertRewardSchema>;
 export type UserReward = typeof userRewards.$inferSelect;
 export type InsertUserReward = z.infer<typeof insertUserRewardSchema>;
+
+// Relations
+export const usersRelations = relations(users, ({ one, many }) => ({
+  tokens: one(tokens, {
+    fields: [users.id],
+    references: [tokens.userId],
+  }),
+  stats: one(userStats, {
+    fields: [users.id],
+    references: [userStats.userId],
+  }),
+  driverRides: many(rides, {
+    relationName: "driverRides",
+  }),
+  riderRides: many(rides, {
+    relationName: "riderRides",
+  }),
+  userRewards: many(userRewards),
+}));
+
+export const tokensRelations = relations(tokens, ({ one }) => ({
+  user: one(users, {
+    fields: [tokens.userId],
+    references: [users.id],
+  }),
+}));
+
+export const ridesRelations = relations(rides, ({ one }) => ({
+  driver: one(users, {
+    fields: [rides.driverId],
+    references: [users.id],
+    relationName: "driverRides",
+  }),
+  rider: one(users, {
+    fields: [rides.riderId],
+    references: [users.id],
+    relationName: "riderRides",
+  }),
+}));
+
+export const userStatsRelations = relations(userStats, ({ one }) => ({
+  user: one(users, {
+    fields: [userStats.userId],
+    references: [users.id],
+  }),
+}));
+
+export const rewardsRelations = relations(rewards, ({ many }) => ({
+  userRewards: many(userRewards),
+}));
+
+export const userRewardsRelations = relations(userRewards, ({ one }) => ({
+  user: one(users, {
+    fields: [userRewards.userId],
+    references: [users.id],
+  }),
+  reward: one(rewards, {
+    fields: [userRewards.rewardId],
+    references: [rewards.id],
+  }),
+}));

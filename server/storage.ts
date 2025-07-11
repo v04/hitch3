@@ -4,6 +4,8 @@ import {
   type Ride, type InsertRide, type UserStats, type InsertUserStats,
   type Reward, type InsertReward, type UserReward, type InsertUserReward
 } from "@shared/schema";
+import { db } from "./db";
+import { eq } from "drizzle-orm";
 
 export interface IStorage {
   // Users
@@ -237,4 +239,148 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+// Database Storage Implementation
+export class DatabaseStorage implements IStorage {
+  async getUser(id: number): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user || undefined;
+  }
+
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.email, email));
+    return user || undefined;
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    const [user] = await db
+      .insert(users)
+      .values({
+        ...insertUser,
+        rating: "4.5",
+        trustScore: 85,
+        isVerified: false,
+        createdAt: new Date()
+      })
+      .returning();
+
+    // Create initial tokens
+    await db.insert(tokens).values({
+      userId: user.id,
+      food: 50,
+      clothing: 25,
+      travel: 35,
+      coupons: 15
+    });
+
+    // Create initial stats
+    await db.insert(userStats).values({
+      userId: user.id,
+      totalRides: 0,
+      carbonSaved: "0",
+      distanceTraveled: "0",
+      tokensEarned: 125
+    });
+
+    return user;
+  }
+
+  async updateUser(id: number, userUpdate: Partial<User>): Promise<User | undefined> {
+    const [user] = await db
+      .update(users)
+      .set(userUpdate)
+      .where(eq(users.id, id))
+      .returning();
+    return user || undefined;
+  }
+
+  async getUserTokens(userId: number): Promise<Tokens | undefined> {
+    const [userTokens] = await db.select().from(tokens).where(eq(tokens.userId, userId));
+    return userTokens || undefined;
+  }
+
+  async updateUserTokens(userId: number, tokenUpdate: Partial<Tokens>): Promise<Tokens | undefined> {
+    const [updated] = await db
+      .update(tokens)
+      .set(tokenUpdate)
+      .where(eq(tokens.userId, userId))
+      .returning();
+    return updated || undefined;
+  }
+
+  async getRide(id: number): Promise<Ride | undefined> {
+    const [ride] = await db.select().from(rides).where(eq(rides.id, id));
+    return ride || undefined;
+  }
+
+  async getUserRides(userId: number): Promise<Ride[]> {
+    return await db.select().from(rides).where(eq(rides.driverId, userId));
+  }
+
+  async getNearbyRides(lat: number, lng: number, radius: number): Promise<Ride[]> {
+    // For now, return all rides - in production, you'd implement spatial queries
+    return await db.select().from(rides);
+  }
+
+  async createRide(insertRide: InsertRide): Promise<Ride> {
+    const [ride] = await db
+      .insert(rides)
+      .values({
+        ...insertRide,
+        tokensEarned: 10,
+        createdAt: new Date(),
+        completedAt: null
+      })
+      .returning();
+    return ride;
+  }
+
+  async updateRide(id: number, rideUpdate: Partial<Ride>): Promise<Ride | undefined> {
+    const [ride] = await db
+      .update(rides)
+      .set(rideUpdate)
+      .where(eq(rides.id, id))
+      .returning();
+    return ride || undefined;
+  }
+
+  async getUserStats(userId: number): Promise<UserStats | undefined> {
+    const [stats] = await db.select().from(userStats).where(eq(userStats.userId, userId));
+    return stats || undefined;
+  }
+
+  async updateUserStats(userId: number, statsUpdate: Partial<UserStats>): Promise<UserStats | undefined> {
+    const [stats] = await db
+      .update(userStats)
+      .set(statsUpdate)
+      .where(eq(userStats.userId, userId))
+      .returning();
+    return stats || undefined;
+  }
+
+  async getRewards(): Promise<Reward[]> {
+    return await db.select().from(rewards);
+  }
+
+  async getRewardsByCategory(category: string): Promise<Reward[]> {
+    return await db.select().from(rewards).where(eq(rewards.category, category));
+  }
+
+  async getUserRewards(userId: number): Promise<UserReward[]> {
+    return await db.select().from(userRewards).where(eq(userRewards.userId, userId));
+  }
+
+  async redeemReward(userId: number, rewardId: number): Promise<UserReward> {
+    const [userReward] = await db
+      .insert(userRewards)
+      .values({
+        userId,
+        rewardId,
+        redeemedAt: new Date(),
+        status: "redeemed"
+      })
+      .returning();
+    return userReward;
+  }
+}
+
+export const storage = new DatabaseStorage();
